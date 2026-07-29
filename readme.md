@@ -1,5 +1,18 @@
 ## 最完善的 iOS Shadowrocket规则
 
+> **klwb 定制版**
+>
+> 本仓库每天自动合并
+> [Johnshall/Shadowrocket-ADBlock-Rules-Forever](https://github.com/Johnshall/Shadowrocket-ADBlock-Rules-Forever)
+> 的 `build` 分支，并叠加本仓库的个人规则。请使用本仓库的 Raw
+> 订阅地址，不要继续使用原作者的 `johnshall.github.io` 地址。
+>
+> 推荐订阅：
+> <https://raw.githubusercontent.com/klwb/Shadowrocket-ADBlock-Rules-Forever/release/sr_top500_banlist_ad.conf>
+>
+> 自定义规则的维护方法见
+> [CUSTOM_RULES.md](https://github.com/klwb/Shadowrocket-ADBlock-Rules-Forever/blob/build/CUSTOM_RULES.md)。
+
 ### 试更新公告
 
 由于原作者 [h2y](https://github.com/h2y) 已停止维护 [Shadowrocket-ADBlock-Rules](https://github.com/h2y/Shadowrocket-ADBlock-Rules)，Shadowrocket 再无划分如此细致精美的规则。因此我决定用自己有限的能力和技术对该项目以个人的理解进行更新与维护。**所有规则都会在每天北京时间 8:00 更新发布。**
@@ -16,7 +29,7 @@
 
 这里是一系列好用的Shadowrocket规则，针对 [Shadowrocket](https://liguangming.com/Shadowrocket) 开发，支持广告过滤。规则定义了哪些网站可以直连，哪些必须走代理，规则是一个纯文本文件，无法提供魔法上网功能。使用 Python 按照一定的规则和模板定期自动生成，并且使用开源的力量，集众人之力逐渐完善。
 
-**正在使用手机浏览本页面的用户 [请点击这里](https://johnshall.github.io/Shadowrocket-ADBlock-Rules-Forever) ，查看完整的说明文档。**
+**正在使用手机浏览本页面的用户 [请点击这里](https://github.com/klwb/Shadowrocket-ADBlock-Rules-Forever/tree/release) ，查看完整的说明文档。**
 
 **本规则具有以下特点：**
 
@@ -35,7 +48,7 @@
 
 ## 规则列表
 
-![规则选择指南](https://johnshall.github.io/Shadowrocket-ADBlock-Rules-Forever/figure/guide.png)
+![规则选择指南](https://raw.githubusercontent.com/klwb/Shadowrocket-ADBlock-Rules-Forever/release/figure/guide.png)
 
 规则 | 规定代理的网站 | 规定直连的网站 
 --- | ----------- | ------------- 
@@ -153,9 +166,9 @@ INTP | Jack of all trades | I use Arch BTW
 - 直连：正常的网站
 - 包含广告过滤
 
-规则地址：<https://johnshall.github.io/Shadowrocket-ADBlock-Rules-Forever/sr_top500_banlist_ad.conf>
+规则地址：<https://raw.githubusercontent.com/klwb/Shadowrocket-ADBlock-Rules-Forever/release/sr_top500_banlist_ad.conf>
 
-![二维码](https://johnshall.github.io/Shadowrocket-ADBlock-Rules-Forever/figure/sr_top500_banlist_ad.png)
+![二维码](https://raw.githubusercontent.com/klwb/Shadowrocket-ADBlock-Rules-Forever/release/figure/sr_top500_banlist_ad.png)
 
 ## 白名单过滤 + 广告
 
@@ -165,9 +178,9 @@ INTP | Jack of all trades | I use Arch BTW
 - 代理：默认代理其余的所有境外网站
 - 包含广告过滤
 
-规则地址：<https://johnshall.github.io/Shadowrocket-ADBlock-Rules-Forever/sr_top500_whitelist_ad.conf>
+规则地址：<https://raw.githubusercontent.com/klwb/Shadowrocket-ADBlock-Rules-Forever/release/sr_top500_whitelist_ad.conf>
 
-![二维码](https://johnshall.github.io/Shadowrocket-ADBlock-Rules-Forever/figure/sr_top500_whitelist_ad.png)
+![二维码](https://raw.githubusercontent.com/klwb/Shadowrocket-ADBlock-Rules-Forever/release/figure/sr_top500_whitelist_ad.png)
 
 
 ## 黑名单过滤
@@ -178,9 +191,9 @@ INTP | Jack of all trades | I use Arch BTW
 - 直连：正常的网站
 - 不包含广告过滤
 
-规则地址：<https://johnshall.github.io/Shadowrocket-ADBlock-Rules-Forever/sr_top500_banlist.conf>
+规则地址：<https://raw.githubusercontent.com/klwb/Shadowrocket-ADBlock-Rules-Forever/release/sr_top500_banlist.conf>
 
-![二维码](https://johnshall.github.io/Shadowrocket-ADBlock-Rules-Forever/figure/sr_top500_banlist.png)
+![二维码](https://raw.githubusercontent.com/klwb/Shadowrocket-ADBlock-Rules-Forever/release/figure/sr_top500_banlist.png)
 
 
 ## 白名单过滤
@@ -191,27 +204,27 @@ INTP | Jack of all trades | I use Arch BTW
 - 代理：默认代理其余的所有境外网站
 - 不包含广告过滤
 
-规则地址：<https://johnshall.github.io/Shadowrocket-ADBlock-Rules-Forever/sr_top500_whitelist.conf>
+规则地址：<https://raw.githubusercontent.com/klwb/Shadowrocket-ADBlock-Rules-Forever/release/sr_top500_whitelist.conf>
 
-![二维码](https://johnshall.github.io/Shadowrocket-ADBlock-Rules-Forever/figure/sr_top500_whitelist.png)
+![二维码](https://raw.githubusercontent.com/klwb/Shadowrocket-ADBlock-Rules-Forever/release/figure/sr_top500_whitelist.png)
 
 
 ## 国内外划分 + 广告
 
 国内外划分，对中国网站直连，外国网站代理。包含广告过滤。国外网站总是走代理，对于某些港澳台网站，速度反而会比直连更快。
 
-规则地址：<https://johnshall.github.io/Shadowrocket-ADBlock-Rules-Forever/sr_cnip_ad.conf>
+规则地址：<https://raw.githubusercontent.com/klwb/Shadowrocket-ADBlock-Rules-Forever/release/sr_cnip_ad.conf>
 
-![二维码](https://johnshall.github.io/Shadowrocket-ADBlock-Rules-Forever/figure/sr_cnip_ad.png)
+![二维码](https://raw.githubusercontent.com/klwb/Shadowrocket-ADBlock-Rules-Forever/release/figure/sr_cnip_ad.png)
 
 
 ## 国内外划分
 
 国内外划分，对中国网站直连，外国网站代理。不包含广告过滤。国外网站总是走代理，对于某些港澳台网站，速度反而会比直连更快。
 
-规则地址：<https://johnshall.github.io/Shadowrocket-ADBlock-Rules-Forever/sr_cnip.conf>
+规则地址：<https://raw.githubusercontent.com/klwb/Shadowrocket-ADBlock-Rules-Forever/release/sr_cnip.conf>
 
-![二维码](https://johnshall.github.io/Shadowrocket-ADBlock-Rules-Forever/figure/sr_cnip.png)
+![二维码](https://raw.githubusercontent.com/klwb/Shadowrocket-ADBlock-Rules-Forever/release/figure/sr_cnip.png)
 
 
 ## 直连去广告
@@ -221,9 +234,9 @@ INTP | Jack of all trades | I use Arch BTW
 - 直连：所有请求
 - 包含广告过滤
 
-规则地址：<https://johnshall.github.io/Shadowrocket-ADBlock-Rules-Forever/sr_direct_banad.conf>
+规则地址：<https://raw.githubusercontent.com/klwb/Shadowrocket-ADBlock-Rules-Forever/release/sr_direct_banad.conf>
 
-![二维码](https://johnshall.github.io/Shadowrocket-ADBlock-Rules-Forever/figure/sr_direct_banad.png)
+![二维码](https://raw.githubusercontent.com/klwb/Shadowrocket-ADBlock-Rules-Forever/release/figure/sr_direct_banad.png)
 
 
 ## 代理去广告
@@ -234,9 +247,9 @@ INTP | Jack of all trades | I use Arch BTW
 - 代理：其余所有请求
 - 包含广告过滤
 
-规则地址：<https://johnshall.github.io/Shadowrocket-ADBlock-Rules-Forever/sr_proxy_banad.conf>
+规则地址：<https://raw.githubusercontent.com/klwb/Shadowrocket-ADBlock-Rules-Forever/release/sr_proxy_banad.conf>
 
-![二维码](https://johnshall.github.io/Shadowrocket-ADBlock-Rules-Forever/figure/sr_proxy_banad.png)
+![二维码](https://raw.githubusercontent.com/klwb/Shadowrocket-ADBlock-Rules-Forever/release/figure/sr_proxy_banad.png)
 
 
 ## 回国规则
@@ -247,9 +260,9 @@ INTP | Jack of all trades | I use Arch BTW
 - 代理：中国网站
 - 不包含广告过滤
 
-规则地址：<https://johnshall.github.io/Shadowrocket-ADBlock-Rules-Forever/sr_backcn.conf>
+规则地址：<https://raw.githubusercontent.com/klwb/Shadowrocket-ADBlock-Rules-Forever/release/sr_backcn.conf>
 
-![二维码](https://johnshall.github.io/Shadowrocket-ADBlock-Rules-Forever/figure/sr_backcn.png)
+![二维码](https://raw.githubusercontent.com/klwb/Shadowrocket-ADBlock-Rules-Forever/release/figure/sr_backcn.png)
 
 
 ## 回国规则 + 广告
@@ -260,9 +273,9 @@ INTP | Jack of all trades | I use Arch BTW
 - 代理：中国网站
 - 包含广告过滤
 
-规则地址：<https://johnshall.github.io/Shadowrocket-ADBlock-Rules-Forever/sr_backcn_ad.conf>
+规则地址：<https://raw.githubusercontent.com/klwb/Shadowrocket-ADBlock-Rules-Forever/release/sr_backcn_ad.conf>
 
-![二维码](https://johnshall.github.io/Shadowrocket-ADBlock-Rules-Forever/figure/sr_backcn_ad.png)
+![二维码](https://raw.githubusercontent.com/klwb/Shadowrocket-ADBlock-Rules-Forever/release/figure/sr_backcn_ad.png)
 
 
 ## 仅去广告规则
@@ -271,9 +284,9 @@ INTP | Jack of all trades | I use Arch BTW
 
 - 仅包含去广告规则，不包含代理/直连规则。无任何其他配置。
 
-规则地址：<https://johnshall.github.io/Shadowrocket-ADBlock-Rules-Forever/sr_ad_only.conf>
+规则地址：<https://raw.githubusercontent.com/klwb/Shadowrocket-ADBlock-Rules-Forever/release/sr_ad_only.conf>
 
-![二维码](https://johnshall.github.io/Shadowrocket-ADBlock-Rules-Forever/figure/sr_ad_only.png)
+![二维码](https://raw.githubusercontent.com/klwb/Shadowrocket-ADBlock-Rules-Forever/release/figure/sr_ad_only.png)
 
 
 ----------------------------------------
@@ -288,9 +301,9 @@ INTP | Jack of all trades | I use Arch BTW
 - 规则覆盖范围广
 - 国内外常用app单独分流
 
-规则地址：<https://johnshall.github.io/Shadowrocket-ADBlock-Rules-Forever/lazy.conf>
+规则地址：<https://raw.githubusercontent.com/klwb/Shadowrocket-ADBlock-Rules-Forever/release/lazy.conf>
 
-![二维码](https://johnshall.github.io/Shadowrocket-ADBlock-Rules-Forever/figure/lazy.png)
+![二维码](https://raw.githubusercontent.com/klwb/Shadowrocket-ADBlock-Rules-Forever/release/figure/lazy.png)
 
 
 ## 懒人配置-含策略组（同步自 [LOWERTOP/Shadowrocket](https://github.com/LOWERTOP/Shadowrocket)）
@@ -303,9 +316,9 @@ INTP | Jack of all trades | I use Arch BTW
 - 添加自动切换延迟最低节点类型
 - 通过「代理分组」灵活调整流媒体分流策略
 
-规则地址：<https://johnshall.github.io/Shadowrocket-ADBlock-Rules-Forever/lazy_group.conf>
+规则地址：<https://raw.githubusercontent.com/klwb/Shadowrocket-ADBlock-Rules-Forever/release/lazy_group.conf>
 
-![二维码](https://johnshall.github.io/Shadowrocket-ADBlock-Rules-Forever/figure/lazy_group.png)
+![二维码](https://raw.githubusercontent.com/klwb/Shadowrocket-ADBlock-Rules-Forever/release/figure/lazy_group.png)
 
 
 ## 鸣谢

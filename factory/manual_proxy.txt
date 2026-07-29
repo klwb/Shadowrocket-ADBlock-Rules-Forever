@@ -458,20 +458,3 @@ mc-heads.net
 # 越狱下载源加速
 apt.thebigboss.org
 repo.chariz.com
-
-# ===== 自定义规则 (klwb) =====
-
-# PhotoPrism / 地图
-photoprism.app
-maptiler.com
-mapbox.com
-openstreetmap.org
-
-# 富途
-futunn.com
-moomoo.com
-
-# 长桥
-lbkrs.com
-longbridgeapp.com
-

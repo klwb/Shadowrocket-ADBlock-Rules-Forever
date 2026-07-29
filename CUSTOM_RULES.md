@@ -1,91 +1,86 @@
 # 自定义规则维护指引（klwb fork）
 
-这份 fork 在每天 23:00 UTC（北京时间次日 7:00）自动：
-1. 拉取上游 `Johnshall/build` 的最新源码并合并进本仓库 `build` 分支（保留我的自定义规则）
-2. 构建出新的 `.conf` 文件，强推到 `release` 分支
-3. Shadowrocket 订阅 `release` 分支的 raw URL 即可拿到「上游规则 + 我的规则」
+这个 fork 会自动完成下面的流程：
+
+1. 合并 `Johnshall/build` 的最新源码；
+2. 在构建时临时叠加 `factory/custom_*.txt` 中的个人规则；
+3. 生成新的 `.conf` 文件并强推到 `release` 分支；
+4. 通过本仓库的 Raw 地址提供订阅。
+
+上游文件与个人规则彼此分离，因此上游修改 `manual_*.txt` 时，不需要用
+`-X ours` 强行保留旧文件，也不容易漏掉上游的新规则。
 
 ## 分支约定
 
-| 分支 | 作用 | 是否会被覆盖 |
+| 分支 | 用途 | 是否会被自动覆盖 |
 |---|---|---|
-| `build` | 源代码 + 我的自定义规则（**只在这里改**） | 否（每天合入上游，但保留我的改动） |
-| `release` | 生成的 `.conf` 产物 | 是（每天 orphan 强推重建） |
+| `build` | 上游源码、工作流和个人规则，只在这里维护 | 不会；会自动合并上游 |
+| `release` | Shadowrocket 最终订阅产物 | 会；每次构建都会重建 |
 
-**只编辑 `build` 分支。** 改 `release` 分支没用，会被下次工作流覆盖。
+不要手工编辑 `release` 分支。
 
-## 常见操作
+## 添加个人规则
 
-### 加一个走代理的域名
+规则文件每行填写一个裸域名或 IP/CIDR，不要填写
+`DOMAIN-SUFFIX,...,Proxy` 等前缀。
 
-编辑 `build` 分支的 [factory/manual_proxy.txt](factory/manual_proxy.txt)，在文末追加裸域名（不要带 `DOMAIN-SUFFIX,...,PROXY` 前缀，脚本会自动加）：
+| 目的 | 文件 |
+|---|---|
+| 走代理 | `factory/custom_proxy.txt` |
+| 直连 | `factory/custom_direct.txt` |
+| 拒绝/去广告 | `factory/custom_reject.txt` |
+| 补充 GFWList | `factory/custom_gfwlist.txt` |
+| 排除 GFWList 误判 | `factory/custom_gfwlist_excludes.txt` |
 
-```
-# 自定义 - 某分类
-example.com
-api.example.net
-```
+当前只创建了 `custom_proxy.txt`。需要其他类型时，直接创建对应文件即可，
+构建包装脚本会自动识别非空文件。
 
-提交并 push 到 build 分支，工作流会自动跑（push 到 build 是触发条件之一）。
+提交并推送 `build` 分支后，GitHub Actions 会立即构建；此外每天
+23:00 UTC（北京时间次日 07:00，实际启动可能延迟）也会自动构建。
 
-### 加一个直连（不走代理）的域名
-
-编辑 `factory/manual_direct.txt`，格式同上。
-
-### 加一个屏蔽（reject）的域名
-
-编辑 `factory/manual_reject.txt`，格式同上。
-
-### 把 GFW 黑名单里某个域名排除
-
-编辑 `factory/manual_gfwlist_excludes.txt`。
-
-### 立刻触发一次构建（不想等定时）
-
-GitHub → Actions → 选 "Release Shadowrocket Rules" → 右上 "Run workflow" → 选 release 分支 → Run。
-
-### 手动从上游拉最新源码（一般不用，工作流会自动做）
+## 本地验证
 
 ```bash
-git fetch upstream build
-git checkout build
-git merge upstream/build -X ours
-git push origin build
+git switch build
+./factory/build_with_custom_rules.sh
 ```
 
-## 工作流原理（在 release 分支的 .github/workflows/release.yml）
+脚本只会临时把个人规则叠加到 `manual_*.txt`，结束或失败时都会恢复上游
+文件；生成的 `.conf` 文件会保留，方便检查。
 
-```yaml
-1. checkout build 分支（fetch-depth: 0，需要完整历史才能 merge）
-2. checkout release 分支
-3. Sync upstream build：
-   - git fetch upstream build
-   - git merge upstream/build -X ours
-     ├─ 上游新增的规则无冲突 → 合并进来
-     └─ 上游和我都改了同一行 → 保留我的版本
-   - git push origin build（把合并结果保存回 build 分支）
-4. pip install requirements.txt
-5. 跑 factory/auto_build.sh 生成 .conf
-6. 把 *.conf, figure/, LICENSE, readme.md 拷贝到 release/
-7. 拉最新 lazy.conf / lazy_group.conf
-8. release 分支用 orphan 方式强推（无历史，全量覆盖）
+## 手动触发
+
+打开 GitHub 仓库的 **Actions → Release Shadowrocket Rules → Run workflow**。
+工作流可以从 `build` 或 `release` 分支手动运行，但它始终读取最新的
+`build` 分支并发布到 `release`。
+
+## 推荐订阅地址
+
+```text
+https://raw.githubusercontent.com/klwb/Shadowrocket-ADBlock-Rules-Forever/release/sr_top500_banlist_ad.conf
 ```
 
-注意：`.github/workflows/release.yml` 这个文件本身在 release 分支，每天 orphan 重建时不会被删，因为 release 目录是从原 release 分支 checkout 出来的，`cp` 命令只覆盖 `.conf` 等指定文件，`.github/` 保持原样。
+其他配置只需替换最后的文件名。个人代理规则会进入使用
+`manual_proxy` 的 7 种配置，不会进入语义上不使用代理域名列表的
+`sr_ad_only.conf`、`sr_direct_banad.conf`、`sr_proxy_banad.conf`
+和回国配置。
 
-## 订阅 URL
+## 工作流的安全策略
 
-把 Shadowrocket 里的订阅地址改成（按你原本订阅的文件名）：
-
-```
-https://raw.githubusercontent.com/klwb/Shadowrocket-ADBlock-Rules-Forever/release/<文件名>.conf
-```
-
-常用文件名见仓库根目录（`sr_top500_banlist_ad.conf`、`sr_ad_only.conf` 等）。
+- 上游有普通更新时自动合并并保存回 `build`；
+- 上游发生真实合并冲突时立即失败，等待人工处理，不会静默丢规则；
+- 推送 `build` 失败时立即失败，不再使用 `|| true` 掩盖错误；
+- 同一时间只允许一个发布任务，避免两个定时/手动任务互相强推；
+- 下载懒人规则失败时停止发布，避免提交空文件；
+- 每次构建都会重新生成二维码，二维码和文档都指向本仓库 Raw 地址；
+- 每次发布都会把 `build` 中的最新版工作流复制到 `release`，保证默认
+  分支上的定时任务持续更新。
 
 ## 排错
 
-- **工作流没跑** → 检查 Settings → Actions 是否开启
-- **工作流失败在 push 阶段** → Settings → Actions → General → Workflow permissions 选 "Read and write permissions"
-- **我的规则没出现在 .conf 里** → 检查是否写在了 `build` 分支的 `factory/manual_*.txt` 里（而不是 release 分支或者根目录）
-- **想恢复某条改动** → `git log factory/manual_proxy.txt` 查历史，`git revert <commit>` 回滚
+- 工作流无法推送：在仓库 **Settings → Actions → General** 中确认
+  Workflow permissions 允许读写；工作流也已显式声明 `contents: write`。
+- 规则没有出现在配置中：确认修改的是 `factory/custom_*.txt`，并检查该
+  配置是否使用相应类型的手工规则。
+- 定时任务没有准点开始：GitHub 的 schedule 可能排队延迟，这是正常现象。
+- Raw 地址短时间还是旧内容：GitHub Raw 有短暂缓存，稍后重新下载即可。
