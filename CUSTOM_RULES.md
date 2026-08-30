@@ -31,9 +31,31 @@
 | 拒绝/去广告 | `factory/custom_reject.txt` |
 | 补充 GFWList | `factory/custom_gfwlist.txt` |
 | 排除 GFWList 误判 | `factory/custom_gfwlist_excludes.txt` |
+| 绕过 macOS/Shadowrocket 系统 HTTP 代理 | `factory/custom_skip_proxy.txt` |
 
-当前只创建了 `custom_proxy.txt`。需要其他类型时，直接创建对应文件即可，
-构建包装脚本会自动识别非空文件。
+当前已创建 `custom_proxy.txt` 和 `custom_skip_proxy.txt`。需要其他普通规则
+类型时，直接创建对应文件即可，构建包装脚本会自动识别非空文件。
+
+### 官方 Tailscale 与 `custom_skip_proxy.txt`
+
+`custom_skip_proxy.txt` 中的项目会在构建期间去重并追加到
+`factory/template/sr_head.txt` 的 `[General] / skip-proxy`，随后进入所有使用
+该公共头部的生成配置。当前用于官方 Tailscale 客户端的内容为：
+
+```text
+100.64.0.0/10
+tail6828f5.ts.net
+*.tail6828f5.ts.net
+```
+
+这会让 macOS/Chrome 不把对应连接交给 Shadowrocket 的系统 HTTP 代理，
+而是直接交给官方 Tailscale 客户端和 MagicDNS 处理。它与
+`DOMAIN-SUFFIX,...,DIRECT` 等普通分流规则用途不同：后者只有在请求已经进入
+Shadowrocket 后才生效，不能解决系统 HTTP 代理先拦截私有域名的问题。
+
+此机制不会启用 Shadowrocket 内置 Tailscale 模块，也不需要 Tailscale
+auth key 或“始终使用 DERP”。模板 `bypass-tun` 中原有的
+`100.64.0.0/10` 保持不变。
 
 提交并推送 `build` 分支后，GitHub Actions 会立即构建；此外每天
 23:00 UTC（北京时间次日 07:00，实际启动可能延迟）也会自动构建。
@@ -45,8 +67,8 @@ git switch build
 ./factory/build_with_custom_rules.sh
 ```
 
-脚本只会临时把个人规则叠加到 `manual_*.txt`，结束或失败时都会恢复上游
-文件；生成的 `.conf` 文件会保留，方便检查。
+脚本只会临时把个人规则叠加到 `manual_*.txt` 和 `template/sr_head.txt`，
+结束或失败时都会恢复上游文件；生成的 `.conf` 文件会保留，方便检查。
 
 ## 手动触发
 

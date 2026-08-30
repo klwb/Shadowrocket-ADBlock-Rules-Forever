@@ -1,0 +1,3 @@
+100.64.0.0/10
+tail6828f5.ts.net
+*.tail6828f5.ts.net
