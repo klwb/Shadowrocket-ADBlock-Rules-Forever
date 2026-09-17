@@ -32,9 +32,11 @@
 | 补充 GFWList | `factory/custom_gfwlist.txt` |
 | 排除 GFWList 误判 | `factory/custom_gfwlist_excludes.txt` |
 | 绕过 macOS/Shadowrocket 系统 HTTP 代理 | `factory/custom_skip_proxy.txt` |
+| 绕过 Shadowrocket TUN 路由 | `factory/custom_bypass_tun.txt` |
 
-当前已创建 `custom_proxy.txt` 和 `custom_skip_proxy.txt`。需要其他普通规则
-类型时，直接创建对应文件即可，构建包装脚本会自动识别非空文件。
+当前已创建 `custom_proxy.txt`、`custom_skip_proxy.txt` 和
+`custom_bypass_tun.txt`。需要其他普通规则类型时，直接创建对应文件即可，
+构建包装脚本会自动识别非空文件。
 
 ### 官方 Tailscale 与 `custom_skip_proxy.txt`
 
@@ -56,6 +58,20 @@ Shadowrocket 后才生效，不能解决系统 HTTP 代理先拦截私有域名�
 此机制不会启用 Shadowrocket 内置 Tailscale 模块，也不需要 Tailscale
 auth key 或“始终使用 DERP”。模板 `bypass-tun` 中原有的
 `100.64.0.0/10` 保持不变。
+
+### RustDesk 与 `custom_bypass_tun.txt`
+
+RustDesk 自建服务器地址放在 `custom_bypass_tun.txt`。构建时会去重并追加到
+`factory/template/sr_head.txt` 的 `[General] / bypass-tun`，从而让 RustDesk 的
+注册、打洞和中继连接直接走物理网络接口，避免被 Shadowrocket TUN 虚拟网卡
+接管。当前配置为：
+
+```text
+120.79.96.104/32
+```
+
+这与普通的 `IP-CIDR,...,DIRECT` 规则不同：`DIRECT` 仍由 Shadowrocket TUN
+处理，而 `bypass-tun` 会让目标地址完全绕过 TUN。
 
 提交并推送 `build` 分支后，GitHub Actions 会立即构建；此外每天
 23:00 UTC（北京时间次日 07:00，实际启动可能延迟）也会自动构建。

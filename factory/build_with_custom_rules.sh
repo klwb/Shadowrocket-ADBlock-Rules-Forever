@@ -128,12 +128,83 @@ apply_custom_skip_proxy() {
   cp "${updated_file}" "${factory_dir}/${target_file}"
 }
 
+apply_custom_bypass_tun() {
+  local custom_file="custom_bypass_tun.txt"
+  local target_file="template/sr_head.txt"
+  local updated_file="${backup_dir}/sr_head.bypass_tun.updated"
+
+  if [[ ! -s "${factory_dir}/${custom_file}" ]]; then
+    return
+  fi
+
+  backup_target_file "${target_file}"
+
+  awk -v custom_file="${factory_dir}/${custom_file}" '
+    function trim(value) {
+      gsub(/^[[:space:]]+|[[:space:]]+$/, "", value)
+      return value
+    }
+
+    BEGIN {
+      while ((getline custom_line < custom_file) > 0) {
+        custom_line = trim(custom_line)
+        if (custom_line == "" || custom_line ~ /^#/) {
+          continue
+        }
+        custom_items[++custom_count] = custom_line
+      }
+      close(custom_file)
+    }
+
+    /^\[General\][[:space:]]*$/ { in_general = 1 }
+    /^\[/ && !/^\[General\][[:space:]]*$/ { in_general = 0 }
+
+    in_general && !updated && /^[[:space:]]*bypass-tun[[:space:]]*=/ {
+      separator = index($0, "=")
+      prefix = substr($0, 1, separator)
+      value = substr($0, separator + 1)
+      output = ""
+
+      existing_count = split(value, existing_items, ",")
+      for (index_item = 1; index_item <= existing_count; index_item++) {
+        item = trim(existing_items[index_item])
+        if (item != "" && !seen[item]++) {
+          output = output (output == "" ? "" : ",") item
+        }
+      }
+
+      for (index_item = 1; index_item <= custom_count; index_item++) {
+        item = custom_items[index_item]
+        if (!seen[item]++) {
+          output = output (output == "" ? "" : ",") item
+        }
+      }
+
+      print prefix " " output
+      updated = 1
+      next
+    }
+
+    { print }
+
+    END {
+      if (!updated) {
+        print "Could not find [General] bypass-tun in " FILENAME > "/dev/stderr"
+        exit 42
+      }
+    }
+  ' "${factory_dir}/${target_file}" > "${updated_file}"
+
+  cp "${updated_file}" "${factory_dir}/${target_file}"
+}
+
 apply_custom_file custom_proxy.txt manual_proxy.txt
 apply_custom_file custom_direct.txt manual_direct.txt
 apply_custom_file custom_reject.txt manual_reject.txt
 apply_custom_file custom_gfwlist.txt manual_gfwlist.txt
 apply_custom_file custom_gfwlist_excludes.txt manual_gfwlist_excludes.txt
 apply_custom_skip_proxy
+apply_custom_bypass_tun
 
 cd -- "${repository_root}"
 "${factory_dir}/auto_build.sh"
