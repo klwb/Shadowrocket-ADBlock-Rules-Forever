@@ -1,0 +1,97 @@
+name: Release Shadowrocket Rules
+
+on:
+  schedule:
+    # 23:00 UTC = 次日北京时间 07:00；GitHub 定时任务可能延迟执行。
+    - cron: "0 23 * * *"
+  push:
+    branches:
+      - build
+    paths-ignore:
+      - "**.md"
+      - "LICENSE"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-shadowrocket-rules
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout build branch
+        uses: actions/checkout@v4
+        with:
+          ref: build
+          path: build
+          fetch-depth: 0
+
+      - name: Checkout release branch
+        uses: actions/checkout@v4
+        with:
+          ref: release
+          path: release
+
+      - name: Sync upstream build
+        working-directory: build
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git remote add upstream https://github.com/Johnshall/Shadowrocket-ADBlock-Rules-Forever.git
+          git fetch --no-tags upstream build
+
+          if ! git merge-base --is-ancestor upstream/build HEAD; then
+            git merge --no-edit upstream/build
+            git push origin HEAD:build
+          fi
+
+      - name: Install requirements
+        run: |
+          python3 -m pip install \
+            -r build/requirements.txt \
+            -r build/requirements-custom.txt
+
+      - name: Build rules with local customizations
+        working-directory: build
+        run: |
+          ./factory/build_with_custom_rules.sh
+          python3 factory/generate_qr_codes.py
+
+      - name: Assemble release
+        run: |
+          set -euo pipefail
+          find release -maxdepth 1 -type f -name "*.conf" -delete
+          cp build/*.conf release/
+          rm -R -- release/figure
+          cp -R build/figure release/figure
+          cp build/LICENSE release/
+          cp build/readme.md release/
+          mkdir -p release/.github/workflows
+          cp build/.github/workflows/release.yml release/.github/workflows/release.yml
+
+      - name: Update lazy rules
+        working-directory: release
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 \
+            --output lazy.conf \
+            https://raw.githubusercontent.com/LOWERTOP/Shadowrocket/main/lazy.conf
+          curl --fail --location --retry 3 \
+            --output lazy_group.conf \
+            https://raw.githubusercontent.com/LOWERTOP/Shadowrocket/main/lazy_group.conf
+
+      - name: Publish release branch
+        working-directory: release
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout --orphan release-next
+          git add -A
+          git commit -m "Nightly build"
+          git push --force origin HEAD:release
