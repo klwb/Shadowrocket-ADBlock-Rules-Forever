@@ -1,0 +1,24 @@
+#
+# PassWall 风格：个人直连规则优先；GFW/指定域名代理；中国域名和 IP 直连；其余代理。
+# 不包含广告过滤，避免验证码、登录和风控资源被误杀。
+#
+
+# 最高优先级：PassWall“直连列表”对应项及本仓库个人直连规则
+{{manual_direct}}
+
+# 必须代理的个人规则和 GFWList
+{{manual_proxy}}
+{{gfwlist}}
+
+# felixonmars/dnsmasq-china-list：中国域名及 Apple 中国 CDN
+{{passwall_china_domains}}
+
+# gaoyifan/china-operator-ip：中国运营商 IPv4 / IPv6
+{{passwall_china_ipv4}}
+{{passwall_china_ipv6}}
+
+# Shadowrocket 内置数据库作为中国 IP 的补充兜底
+GEOIP,CN,DIRECT
+
+# 未知域名默认代理，避免验证码/登录风控的新域名漏过 GFWList 后直连失败
+FINAL,PROXY

@@ -5,4 +5,5 @@ cd $Path
 
 python3 ad.py
 python3 gfwlist.py
+python3 passwall_like.py
 python3 build_confs.py

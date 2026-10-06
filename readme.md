@@ -10,6 +10,12 @@
 > 推荐订阅：
 > <https://raw.githubusercontent.com/klwb/Shadowrocket-ADBlock-Rules-Forever/release/sr_top500_banlist_ad.conf>
 >
+> PassWall 风格（国内直连、未知目标代理、不含广告拦截）：
+> <https://raw.githubusercontent.com/klwb/Shadowrocket-ADBlock-Rules-Forever/release/sr_passwall_like.conf>
+>
+> 生成原理和可独立运行的学习脚本见
+> [PASSWALL_LIKE_RULES.md](https://github.com/klwb/Shadowrocket-ADBlock-Rules-Forever/blob/build/PASSWALL_LIKE_RULES.md)。
+>
 > 自定义规则的维护方法见
 > [CUSTOM_RULES.md](https://github.com/klwb/Shadowrocket-ADBlock-Rules-Forever/blob/build/CUSTOM_RULES.md)。
 
@@ -58,6 +64,7 @@
 [白名单规则](#白名单过滤) |   |  
 [国内外划分 + 去广告](#国内外划分--广告) |  国外网站 | 中国网站
 [国内外划分](#国内外划分) |   |  
+[PassWall 风格](#passwall-风格推荐用于验证码登录) | GFWList、其他未知目标 | 个人直连规则、中国域名和 IP
 [全局直连 + 去广告](#直连去广告) | / | 全部
 [全局代理 + 去广告](#代理去广告) |  全部 | /
 [回国规则 + 去广告](#回国规则--广告) | 中国网站 | 国外网站 
@@ -225,6 +232,19 @@ INTP | Jack of all trades | I use Arch BTW
 规则地址：<https://raw.githubusercontent.com/klwb/Shadowrocket-ADBlock-Rules-Forever/release/sr_cnip.conf>
 
 ![二维码](https://raw.githubusercontent.com/klwb/Shadowrocket-ADBlock-Rules-Forever/release/figure/sr_cnip.png)
+
+## PassWall 风格（推荐用于验证码/登录）
+
+将 PassWall 体系使用的中国域名、中国 IPv4/IPv6 与 GFWList 转换为
+Shadowrocket 原生规则。个人直连规则优先，中国域名和 IP 直连，未知目标代理。
+不包含广告过滤，以降低验证码、登录和风控资源被误杀的概率。
+
+规则地址：<https://raw.githubusercontent.com/klwb/Shadowrocket-ADBlock-Rules-Forever/release/sr_passwall_like.conf>
+
+![二维码](https://raw.githubusercontent.com/klwb/Shadowrocket-ADBlock-Rules-Forever/release/figure/sr_passwall_like.png)
+
+生成过程、脚本说明和自定义方法见
+[PassWall 风格规则学习案例](https://github.com/klwb/Shadowrocket-ADBlock-Rules-Forever/blob/build/PASSWALL_LIKE_RULES.md)。
 
 
 ## 直连去广告

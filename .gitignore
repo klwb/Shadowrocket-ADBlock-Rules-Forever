@@ -2,3 +2,4 @@
 test.py
 __pycache__/
 *.py[cod]
+factory/resultant/passwall_*.list

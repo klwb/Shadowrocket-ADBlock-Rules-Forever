@@ -11,6 +11,7 @@ confs_names = [
     'sr_top500_banlist',
     'sr_top500_whitelist_ad',
     'sr_top500_whitelist',
+    'sr_passwall_like',
     'sr_adb',
     'sr_direct_banad',
     'sr_proxy_banad',
@@ -50,6 +51,15 @@ def getRulesStringFromFile(path, kind):
     return ret
 
 
+def getRulesStringFromFileWithPrefix(path, kind, prefix):
+    with open(path, 'r', encoding='utf-8') as file:
+        return ''.join(
+            '%s,%s,%s\n' % (prefix, content.strip(), kind)
+            for content in file
+            if content.strip()
+        )
+
+
 # get head and foot
 str_head = open('template/sr_head.txt', 'r', encoding='utf-8').read()
 str_foot = open('template/sr_foot.txt', 'r', encoding='utf-8').read()
@@ -71,6 +81,16 @@ values['manual_reject'] = getRulesStringFromFile('manual_reject.txt', 'Reject')
 
 values['gfwlist'] = getRulesStringFromFile('resultant/gfw.list', 'Proxy') \
                   + getRulesStringFromFile('manual_gfwlist.txt', 'Proxy')
+
+values['passwall_china_domains'] = getRulesStringFromFileWithPrefix(
+    'resultant/passwall_china_domains.list', 'DIRECT', 'DOMAIN-SUFFIX'
+)
+values['passwall_china_ipv4'] = getRulesStringFromFileWithPrefix(
+    'resultant/passwall_china_ipv4.list', 'DIRECT,no-resolve', 'IP-CIDR'
+)
+values['passwall_china_ipv6'] = getRulesStringFromFileWithPrefix(
+    'resultant/passwall_china_ipv6.list', 'DIRECT,no-resolve', 'IP-CIDR6'
+)
 
 
 # make confs

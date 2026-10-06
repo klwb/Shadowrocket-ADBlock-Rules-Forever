@@ -16,6 +16,7 @@ SUBSCRIPTION_FILES = (
     "sr_top500_whitelist_ad.conf",
     "sr_top500_banlist.conf",
     "sr_top500_whitelist.conf",
+    "sr_passwall_like.conf",
     "sr_cnip_ad.conf",
     "sr_cnip.conf",
     "sr_direct_banad.conf",

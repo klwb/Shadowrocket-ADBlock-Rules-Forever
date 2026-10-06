@@ -38,6 +38,10 @@
 `custom_bypass_tun.txt`。需要其他普通规则类型时，直接创建对应文件即可，
 构建包装脚本会自动识别非空文件。
 
+`sr_passwall_like.conf` 会使用 `custom_direct.txt` 和 `custom_proxy.txt`，并在
+每天构建时把 PassWall 体系使用的中国域名、IPv4、IPv6 数据转换为
+Shadowrocket 原生规则。转换过程见 [PASSWALL_LIKE_RULES.md](PASSWALL_LIKE_RULES.md)。
+
 ### 官方 Tailscale 与 `custom_skip_proxy.txt`
 
 `custom_skip_proxy.txt` 中的项目会在构建期间去重并追加到

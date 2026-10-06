@@ -59,6 +59,7 @@ jobs:
       - name: Build rules with local customizations
         working-directory: build
         run: |
+          python3 -m unittest factory.test_passwall_like
           ./factory/build_with_custom_rules.sh
           python3 factory/generate_qr_codes.py
 
