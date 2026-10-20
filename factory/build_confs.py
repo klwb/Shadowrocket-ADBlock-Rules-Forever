@@ -2,6 +2,7 @@
 
 import re
 import time
+import argparse
 
 
 # confs names in template/ and ../
@@ -94,7 +95,10 @@ values['passwall_china_ipv6'] = getRulesStringFromFileWithPrefix(
 
 
 # make confs
-for conf_name in confs_names:
+parser = argparse.ArgumentParser()
+parser.add_argument('--only', choices=confs_names, help='Build one configuration only')
+args = parser.parse_args()
+for conf_name in ([args.only] if args.only else confs_names):
     file_template = open('template/'+conf_name+'.txt', 'r', encoding='utf-8')
     template = file_template.read()
   

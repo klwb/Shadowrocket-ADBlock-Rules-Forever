@@ -4,8 +4,8 @@
 # 下载并解析最新版本的 GFWList
 # 对于混合性质的网站，尽量走代理（忽略了所有的@@指令）
 #
-# 从 https://github.com/Johnshall/cn-blocked-domain 中获取GFWList的补充
-# 感谢 https://github.com/Loyalsoldier/cn-blocked-domain
+# 仅使用官方 GFWList。第三方检测名单仅供 audit_domain_conflicts.py 审计，
+# 不参与正式分流，避免国内域名的历史/异常检测覆盖中国直连规则。
 #
 
 
@@ -13,6 +13,8 @@ import time
 import requests
 import re
 import base64
+import argparse
+from pathlib import Path
 
 
 unhandle_rules = []
@@ -79,7 +81,7 @@ def filtrate_rules(rules, excludes=[]):
             split_ret = rule.split('/')
             rule = split_ret[0]
 
-        if not re.match('^[\w.-]+$', rule):
+        if not re.match(r'^[\w.-]+$', rule):
             unhandle_rules.append(rule0)
             continue
 
@@ -97,27 +99,27 @@ def getURLs(url):
     r = requests.get(url)
     return r.text.split("\n")[:-1]
 
-# main
+OFFICIAL_URL = 'https://raw.githubusercontent.com/gfwlist/gfwlist/master/gfwlist.txt'
 
-rule = get_rule(rules_url='https://raw.githubusercontent.com/gfwlist/gfwlist/master/gfwlist.txt', ruleType='base64')
-# 从 https://github.com/Johnshall/cn-blocked-domain 中获取GFWList的补充
-rule += get_rule('https://raw.githubusercontent.com/Johnshall/cn-blocked-domain/release/domains.txt')
 
-rules = clear_format(rule)
+def main():
+    parser = argparse.ArgumentParser(description='Generate proxy domains from official GFWList only')
+    parser.add_argument('--source-file', type=Path, help='Saved official base64 GFWList for reproducible builds')
+    args = parser.parse_args()
+    root = Path(__file__).resolve().parent
+    rule = (base64.b64decode(args.source_file.read_bytes()).decode('utf-8')
+            if args.source_file else get_rule(OFFICIAL_URL, ruleType='base64'))
+    excludes = [line.strip() for line in (root / 'manual_gfwlist_excludes.txt').read_text().splitlines()
+                if line.strip() and not line.lstrip().startswith('#')]
+    rules = sorted(set(filtrate_rules(clear_format(rule), excludes)))
+    if len(rules) < 1000:
+        raise RuntimeError('Refusing to publish an incomplete official GFWList')
+    output = root / 'resultant'
+    output.mkdir(exist_ok=True)
+    (output / 'gfw.list').write_text('\n'.join(rules) + '\n')
+    (output / 'gfw_unhandle.log').write_text('\n'.join(unhandle_rules))
+    print(f'Official GFWList: {len(rules)} domains; third-party detected domains excluded')
 
-excludes = []
-with open('manual_gfwlist_excludes.txt', 'r', encoding='utf-8') as f:
-    for line in f.readlines():
-        if line[0] == "#" or line == "\n":
-            continue
-        excludes.append(line.strip())
 
-rules = filtrate_rules(rules, excludes)
-
-rules = list( set(rules) )
-
-open('resultant/gfw.list', 'w', encoding='utf-8') \
-    .write('\n'.join(rules))
-
-open('resultant/gfw_unhandle.log', 'w', encoding='utf-8') \
-    .write('\n'.join(unhandle_rules))
+if __name__ == '__main__':
+    main()

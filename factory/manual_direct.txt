@@ -1,5 +1,8 @@
 # 手工定义的 Direct 列表
 
+# 国内抖音优先直连，避免 www.douyin.com 被 GFWList 提前匹配。
+douyin.com
+
 #153
 icloud-content.com
 api.cloudmobi.net

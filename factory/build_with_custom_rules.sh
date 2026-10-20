@@ -207,4 +207,4 @@ apply_custom_skip_proxy
 apply_custom_bypass_tun
 
 cd -- "${repository_root}"
-"${factory_dir}/auto_build.sh"
+"${factory_dir}/auto_build.sh" "$@"

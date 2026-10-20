@@ -1,0 +1,2 @@
+# 国内抖音首页不应走境外代理；配合 custom_direct.txt 防止更新后复发。
+www.douyin.com

@@ -1,0 +1,2 @@
+# 国内抖音优先直连，覆盖 GFWList 中 www.douyin.com 的代理条目。
+douyin.com

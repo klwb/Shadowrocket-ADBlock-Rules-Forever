@@ -17,7 +17,7 @@ PassWall 可以直接读取 V2Ray/Xray 的 `geosite.dat`、`geoip.dat`，Shadowr
 | Apple 中国 CDN | 同仓库的 `apple.china.conf` | `DOMAIN-SUFFIX,…,DIRECT` |
 | 中国 IPv4 | `gaoyifan/china-operator-ip` 的 `china.txt` | `IP-CIDR,…,DIRECT,no-resolve` |
 | 中国 IPv6 | 同仓库的 `china6.txt` | `IP-CIDR6,…,DIRECT,no-resolve` |
-| 应代理域名 | 本仓库每日转换的 GFWList 及个人代理列表 | `DOMAIN-SUFFIX,…,PROXY` 等 |
+| 应代理域名 | 官方 GFWList 及个人代理列表 | `DOMAIN-SUFFIX,…,PROXY` 等 |
 
 `Loyalsoldier/v2ray-rules-dat` 的 `geosite:cn` / `geoip:cn` 也整合了上述
 felixonmars 和 gaoyifan 数据。本案例直接读取上游文本，是为了避免先解析
@@ -93,3 +93,33 @@ example.cn
 - 命中 `PROXY` 仍打不开：检查节点地区、节点 IP 风控和 DNS；
 - 命中 `REJECT`：说明使用了带广告过滤的其他配置，本配置本身没有拒绝规则；
 - 完全看不到请求：检查浏览器安全 DNS、系统代理旁路或其他 VPN 是否抢占流量。
+## 来源链修复（2026-10-20）
+
+正式生成仅下载官方 GFWList，停止合并 `Johnshall/cn-blocked-domain` 的检测结果。
+后者只由 `factory/audit_domain_conflicts.py` 下载供审计，不参与生成与发布。
+个人代理规则仍高于中国列表，不改变富途、长桥等显式代理设置。
+官方列表与中国列表之间仍可能存在有意或可疑重叠，不能批量交换优先级；审计后逐域处理。
+
+复查上游冲突：
+
+```bash
+python3 factory/audit_domain_conflicts.py --output /tmp/shadowrocket-rule-audit.md
+python3 -m unittest factory.test_passwall_like factory.test_gfwlist
+```
+
+如已通过正常下载流程准备好 `factory/resultant` 内的所有来源，可仅重建一份配置：
+
+```bash
+./factory/build_with_custom_rules.sh --from-local-sources --only sr_passwall_like
+```
+
+此命令不会刷新来源，日常更新仍使用上文完整构建命令。当前电脑启用的修复版
+命名为 `sr_passwall_official.conf`，原配置保留供回退；自动发布产物仍叫 `sr_passwall_like.conf`。
+
+`www.douyin.com` 可能出现在 GFW 代理列表，并先于中国域名直连列表命中。
+本地维护 `douyin.com` 的最高优先级直连项，并从 GFW 列表排除
+`www.douyin.com`。基础 manual 文件与 custom 文件均保留此修复，分别覆盖普通构建和自定义构建。
+
+更新配置后，在 Shadowrocket「配置 → 测试规则」输入 `www.douyin.com`，
+结果应为 `DIRECT`；同时确认 `v3-dy-o.zjcdn.com` 为 `DIRECT`。
+已建立的视频连接可通过退出并重新打开抖音来重建。
